@@ -1,0 +1,117 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Globals:
+  Function:
+    Timeout: 30
+    MemorySize: 256
+    Runtime: python3.11
+    Environment:
+      Variables:
+        DYNAMODB_TABLE:
+          Ref: UsersTable
+Resources:
+  UsersTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Users
+      AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S
+      KeySchema:
+      - AttributeName: id
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  CreateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: CreateUserFunction
+      Handler: create.lambda_handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: post
+    Metadata:
+      SamResourceId: CreateUserFunction
+  GetUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: GetUserFunction
+      Handler: get.lambda_handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: get
+    Metadata:
+      SamResourceId: GetUserFunction
+  ListUsersFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ListUsersFunction
+      Handler: list.lambda_handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /users
+            Method: get
+    Metadata:
+      SamResourceId: ListUsersFunction
+  UpdateUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: UpdateUserFunction
+      Handler: update.lambda_handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: put
+    Metadata:
+      SamResourceId: UpdateUserFunction
+  DeleteUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: DeleteUserFunction
+      Handler: delete.lambda_handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: UsersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: delete
+    Metadata:
+      SamResourceId: DeleteUserFunction
+Outputs:
+  ApiEndpoint:
+    Description: API Gateway endpoint URL
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
+  UsersTable:
+    Description: DynamoDB Users Table Name
+    Value:
+      Ref: UsersTable
