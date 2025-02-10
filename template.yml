@@ -100,7 +100,7 @@ Resources:
 
 Outputs:
   ApiEndpoint:
-    Description: "API Gateway endpoint URL to view the UI"
+    Description: "API Gateway endpoint URL-testing"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
   UsersTable:
     Description: "DynamoDB Users Table Name"
