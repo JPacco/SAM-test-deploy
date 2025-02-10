@@ -83,20 +83,20 @@ Resources:
             Path: /users/{id}
             Method: put
 
-  # DeleteUserFunction:
-  #   Type: AWS::Serverless::Function
-  #   Properties:
-  #     CodeUri: functions/
-  #     Handler: delete.lambda_handler
-  #     Policies:
-  #       - DynamoDBCrudPolicy:
-  #           TableName: !Ref UsersTable
-  #     Events:
-  #       Api:
-  #         Type: Api
-  #         Properties:
-  #           Path: /users/{id}
-  #           Method: delete
+  DeleteUserFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: functions/
+      Handler: delete.lambda_handler
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref UsersTable
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /users/{id}
+            Method: delete
 
 Outputs:
   ApiEndpoint:
